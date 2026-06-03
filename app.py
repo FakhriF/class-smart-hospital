@@ -16,50 +16,50 @@ scaler = bundle['scaler']
 le_department = bundle['le_department']
 
 st.title("🏥 Smart Hospital Patient Triage")
-st.write("Masukkan data gejala pasien di bawah ini untuk mendapatkan rekomendasi Departemen Spesialis.")
+st.write("Enter the patient's symptom data below to get a recommendation for a specialist department.")
 st.markdown("---")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("📊 Data Fisik & Tanda Vital")
-    age = st.number_input("Usia Pasien (Tahun)", min_value=0, max_value=120, value=25)
-    gender_input = st.selectbox("Jenis Kelamin", ["Male", "Female", "Unknown"])
+    st.subheader("📊 Physical Data & Vital Signs")
+    age = st.number_input("Patient Age (Years)", min_value=0, max_value=120, value=25)
+    gender_input = st.selectbox("Gender", ["Male", "Female", "Unknown"])
     
     temperature_level = st.selectbox(
-        "Tingkat Suhu Tubuh", 
+        "Body Temperature Level", 
         ["Below 37°C", "37-38°C", "Above 38°C", "Unknown"]
     )
     heart_rate_level = st.selectbox(
-        "Detak Jantung (Heart Rate)", 
+        "Heart Rate", 
         ["Below 60 bpm", "60-100 bpm", "Above 100 bpm", "Unknown"]
     )
     duration = st.selectbox(
-        "Durasi Gejala Merasakan Sakit", 
+        "Duration of Symptoms", 
         ["Less than 1 day", "1-3 days", "4-7 days", "More than 1 week", "Unknown"]
     )
 
 with col2:
-    st.subheader("🤒 Gejala yang Dirasakan")
-    fever = 1 if st.checkbox("Demam (Fever)") else 0
-    cough = 1 if st.checkbox("Batuk (Cough)") else 0
-    headache = 1 if st.checkbox("Sakit Kepala (Headache)") else 0
-    chest_pain = 1 if st.checkbox("Nyeri Dada (Chest Pain)") else 0
-    stomach_pain = 1 if st.checkbox("Sakit Perut (Stomach Pain)") else 0
-    shortness_breath = 1 if st.checkbox("Sesak Napas (Shortness of Breath)") else 0
-    nausea_vomiting = 1 if st.checkbox("Mual / Muntah (Nausea / Vomiting)") else 0
-    dizziness = 1 if st.checkbox("Pusing Berputar (Dizziness)") else 0
-    skin_rash = 1 if st.checkbox("Gatal / Ruam Kulit (Skin Rash)") else 0
+    st.subheader("🤒 Symptoms")
+    fever = 1 if st.checkbox("Fever") else 0
+    cough = 1 if st.checkbox("Cough") else 0
+    headache = 1 if st.checkbox("Headache") else 0
+    chest_pain = 1 if st.checkbox("Chest Pain") else 0
+    stomach_pain = 1 if st.checkbox("Stomach Pain") else 0
+    shortness_breath = 1 if st.checkbox("Shortness of Breath") else 0
+    nausea_vomiting = 1 if st.checkbox("Nausea / Vomiting") else 0
+    dizziness = 1 if st.checkbox("Dizziness") else 0
+    skin_rash = 1 if st.checkbox("Skin Rash") else 0
 
-    st.subheader("🏥 Riwayat Penyakit (Komorbid)")
+    st.subheader("🏥 Medical History (Comorbidities)")
     diabetes = 1 if st.checkbox("Diabetes") else 0
-    asthma = 1 if st.checkbox("Asma") else 0
-    hypertension = 1 if st.checkbox("Hipertensi (Darah Tinggi)") else 0
-    heart_disease = 1 if st.checkbox("Penyakit Jantung") else 0
+    asthma = 1 if st.checkbox("Asthma") else 0
+    hypertension = 1 if st.checkbox("Hypertension (High Blood Pressure)") else 0
+    heart_disease = 1 if st.checkbox("Heart Disease") else 0
 
 st.markdown("---")
 
-if st.button("🚀 Proses Triage Pasien", type="primary", use_container_width=True):
+if st.button("🚀 Process Patient Triage", type="primary", use_container_width=True):
     
     gender_encoded = {'Male': 0, 'Female': 1, 'Unknown': 2}[gender_input]
     temp_encoded = {'Below 37°C': 0, '37-38°C': 1, 'Above 38°C': 2, 'Unknown': 3}[temperature_level]
@@ -83,12 +83,12 @@ if st.button("🚀 Proses Triage Pasien", type="primary", use_container_width=Tr
     dept_name = le_department.inverse_transform([pred_code])[0]
     confidence = proba[pred_code] * 100
     
-    st.success(f"### 🎯 Rekomendasi Departemen: **{dept_name}**")
-    st.info(f"💡 **Tingkat Keyakinan AI:** {confidence:.1f}%")
+    st.success(f"### 🎯 Recommended Department: **{dept_name}**")
+    st.info(f"💡 **AI Confidence Level:** {confidence:.1f}%")
     
-    with st.expander("🔍 Lihat Detail Probabilitas Semua Departemen"):
+    with st.expander("🔍 View Probability Details for All Departments"):
         for i, name in enumerate(le_department.classes_):
             score = proba[i] * 100
             st.write(f"**{name}**")
-            st.progress(int(score)) # Bikin progress bar visual
+            st.progress(int(score)) 
             st.write(f"{score:.1f}%")
